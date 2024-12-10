@@ -12,6 +12,10 @@ function App() {
   const [fetchedData, updateFetchedData] = useState({});
   const [pageNumber, setPageNumber] = useState(1); // Sayfa numarasını state olarak tutuyoruz
   const [search, setSearch]=useState("");
+  const [status, updateStatus]=useState("");
+  const [gender, updateGender]=useState("");
+  const [species, updateSpecies]=useState("");
+
   const { info, results } = fetchedData;
 
   // API'den veri çekme işlemi
@@ -19,7 +23,7 @@ function App() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}`
+          `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}&status=${status}&gender=${gender}&species=${species}`
         );
         const data = await response.json();
         updateFetchedData(data);
@@ -28,12 +32,21 @@ function App() {
       }
     };
     fetchData();
-  }, [pageNumber, search]); // search bağımlılık olarak eklendi
+  }, [pageNumber, search, status, gender, species]); // search bağımlılık olarak eklendi
   
 
   const updatePageNumber = (newPageNumber) => {
     setPageNumber(newPageNumber); // Sayfa numarasını güncelleme fonksiyonu
   };
+
+  const clearFilters = () => {
+    updateStatus("");
+    updateGender("");
+    updateSpecies("");
+    setPageNumber(1);
+  };
+
+
   return (
     <div className="App">
       <h1 className="text-center mb-3">Characters</h1>
@@ -43,7 +56,15 @@ function App() {
         <div className="row">
           {/* Filter Component */}
           <div className="col-lg-2 col-12 mb-3">
-            <Filter />
+            <Filter 
+              updateStatus={updateStatus} 
+              selectedStatus={status}
+              updateSpecies={updateSpecies}
+              selectedSpecies={species}
+              updateGender={updateGender}
+              selectedGender={gender}
+              clearFilters={clearFilters}
+              />
           </div>
   
           {/* Cards */}
